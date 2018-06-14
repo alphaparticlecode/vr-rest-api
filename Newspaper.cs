@@ -113,6 +113,9 @@ public class Newspaper : MonoBehaviour
 	
 	void Update()
 	{
+		// Hide the entire newspaper closeup
+		this.transform.parent.gameObject.SetActive(false);
+
 		OVRInput.Controller activeController = OVRInput.GetActiveController();
 
 		data.Length = 0;
