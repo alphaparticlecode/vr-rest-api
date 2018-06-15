@@ -96,34 +96,23 @@ public class Newspaper : MonoBehaviour
 		}
 
 		data = new StringBuilder(2048);
-
-		monitors = new List<BoolMonitor>()
-		{
-			new BoolMonitor("PrimaryIndexTrigger",              () => OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger)),
-			new BoolMonitor("PrimaryIndexTriggerDown",          () => OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger)),
-			new BoolMonitor("PrimaryIndexTriggerUp",            () => OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger)),
-			new BoolMonitor("PrimaryIndexTrigger (Touch)",      () => OVRInput.Get(OVRInput.Touch.PrimaryIndexTrigger)),
-			new BoolMonitor("PrimaryIndexTriggerDown (Touch)",  () => OVRInput.GetDown(OVRInput.Touch.PrimaryIndexTrigger)),
-			new BoolMonitor("PrimaryIndexTriggerUp (Touch)",    () => OVRInput.GetUp(OVRInput.Touch.PrimaryIndexTrigger)),
-			new BoolMonitor("PrimaryHandTrigger",               () => OVRInput.Get(OVRInput.Button.PrimaryHandTrigger)),
-			new BoolMonitor("PrimaryHandTriggerDown",           () => OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger)),
-			new BoolMonitor("PrimaryHandTriggerUp",             () => OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger)),
-		};
 	}
 	
 	void Update()
 	{
 		// Hide the entire newspaper closeup
-		this.transform.parent.gameObject.SetActive(false);
 
 		OVRInput.Controller activeController = OVRInput.GetActiveController();
 
 		data.Length = 0;
 
-		for (int i = 0; i < monitors.Count; i++)
-		{
-			monitors[i].Update();
-			monitors[i].AppendToStringBuilder(ref data);
+		if( OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger) ) {
+			if (this.transform.parent.gameObject.active) {
+      			this.transform.parent.gameObject.SetActive(false);
+ 			}
+ 			else {
+ 				this.transform.parent.gameObject.SetActive(true);
+ 			}
 		}
 
 		if (uiText != null)
