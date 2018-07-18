@@ -87,6 +87,7 @@ public class Newspaper : MonoBehaviour
 	public Text uiText;
 	private List<BoolMonitor> monitors;
 	private StringBuilder data;
+	public Renderer rend;
 
 	void Start()
 	{
@@ -100,25 +101,14 @@ public class Newspaper : MonoBehaviour
 	
 	void Update()
 	{
-		// Hide the entire newspaper closeup
+		// data.Length = 0;
 
-		OVRInput.Controller activeController = OVRInput.GetActiveController();
+		// Debug.Log(data.ToString());
 
-		data.Length = 0;
-
-		if( OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger) ) {
-			if (this.transform.parent.gameObject.active) {
-      			this.transform.parent.gameObject.SetActive(false);
- 			}
- 			else {
- 				this.transform.parent.gameObject.SetActive(true);
- 			}
-		}
-
-		if (uiText != null)
-		{
-			uiText.text = data.ToString();
-		}
+		// if (uiText != null)
+		// {
+		// 	uiText.text = data.ToString();
+		// }
 	}
 }
 
