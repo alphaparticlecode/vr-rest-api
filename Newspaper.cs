@@ -66,8 +66,6 @@ public class Newspaper : MonoBehaviour
         var article = JSON.Parse(jsonResponse);
         string headline = article[0]["title"]["rendered"].Value;
 
-        Debug.Log(headline);
-
         return headline;
 	}
 }
