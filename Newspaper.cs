@@ -24,70 +24,20 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System;
+using UnityEngine.Networking;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Net;
+using System.IO;
+using SimpleJSON;
 
 public class Newspaper : MonoBehaviour
 {
-	public class BoolMonitor
-	{
-		public delegate bool BoolGenerator();
-
-		private string m_name = "";
-		private BoolGenerator m_generator;
-		private bool m_prevValue = false;
-		private bool m_currentValue = false;
-		private bool m_currentValueRecentlyChanged = false;
-		private float m_displayTimeout = 0.0f;
-		private float m_displayTimer = 0.0f;
-
-		public BoolMonitor(string name, BoolGenerator generator, float displayTimeout = 0.5f)
-		{
-			m_name = name;
-			m_generator = generator;
-			m_displayTimeout = displayTimeout;
-		}
-
-		public void Update()
-		{
-			m_prevValue = m_currentValue;
-			m_currentValue = m_generator();
-
-			if (m_currentValue != m_prevValue)
-			{
-				m_currentValueRecentlyChanged = true;
-				m_displayTimer = m_displayTimeout;
-			}
-
-			if (m_displayTimer > 0.0f)
-			{
-				m_displayTimer -= Time.deltaTime;
-
-				if (m_displayTimer <= 0.0f)
-				{
-					m_currentValueRecentlyChanged = false;
-					m_displayTimer = 0.0f;
-				}
-			}
-		}
-
-		public void AppendToStringBuilder(ref StringBuilder sb)
-		{
-			sb.Append(m_name);
-
-			if (m_currentValue && m_currentValueRecentlyChanged)
-				sb.Append(": *True*\n");
-			else if (m_currentValue)
-				sb.Append(":  True \n");
-			else if (!m_currentValue && m_currentValueRecentlyChanged)
-				sb.Append(": *False*\n");
-			else if (!m_currentValue)
-				sb.Append(":  False \n");
-		}
-	}
-
 	public Text uiText;
-	private List<BoolMonitor> monitors;
 	private StringBuilder data;
 	public Renderer rend;
+	string headline;
 
 	void Start()
 	{
@@ -96,19 +46,29 @@ public class Newspaper : MonoBehaviour
 			uiText.supportRichText = false;
 		}
 
-		data = new StringBuilder(2048);
+		headline = GetTopArticle();
 	}
 	
 	void Update()
 	{
-		// data.Length = 0;
+		if (uiText != null)
+		{
+			uiText.text = headline;
+		}
+	}
 
-		// Debug.Log(data.ToString());
+	private string GetTopArticle() {
+		HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://dailyprophet.alphaparticle.com/wp-json/wp/v2/posts?per_page=1");
+		HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+        StreamReader reader = new StreamReader(response.GetResponseStream());
+        string jsonResponse = reader.ReadToEnd();
 
-		// if (uiText != null)
-		// {
-		// 	uiText.text = data.ToString();
-		// }
+        var article = JSON.Parse(jsonResponse);
+        string headline = article[0]["title"]["rendered"].Value;
+
+        Debug.Log(headline);
+
+        return headline;
 	}
 }
 
