@@ -32,6 +32,10 @@ using System.Net;
 using System.IO;
 using SimpleJSON;
 
+using System.IO.IsolatedStorage;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+
 public class Newspaper : MonoBehaviour
 {
 	public Text uiText;
@@ -57,7 +61,22 @@ public class Newspaper : MonoBehaviour
 		}
 	}
 
+	// SEE THE WARNING BELOW
+	private static bool TrustCertificate(object sender, X509Certificate x509Certificate, X509Chain x509Chain, SslPolicyErrors sslPolicyErrors) {
+    	// all Certificates are accepted
+    	return true;
+	}
+
 	private string GetTopArticle() {
+		// IMPORTANT: DO NOT USE THIS NEXT LINE IN PRODUCTION
+		// It implicitly trusts the certificate of whatever URL you're calling
+		// and could leave your application vulnerable
+
+		ServicePointManager.ServerCertificateValidationCallback = TrustCertificate;
+
+		// IMPORTANT: REALLY DON'T USE THAT ^^
+		// OK, on to the rest of the code...
+
 		HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://dailyprophet.alphaparticle.com/wp-json/wp/v2/posts?per_page=1");
 		HttpWebResponse response = (HttpWebResponse)request.GetResponse();
         StreamReader reader = new StreamReader(response.GetResponseStream());
