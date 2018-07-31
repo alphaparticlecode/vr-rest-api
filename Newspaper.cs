@@ -41,6 +41,7 @@ public class Newspaper : MonoBehaviour
 	public Text uiText;
 	private StringBuilder data;
 	public Renderer rend;
+	string article_body;
 	string headline;
 
 	void Start()
@@ -50,15 +51,12 @@ public class Newspaper : MonoBehaviour
 			uiText.supportRichText = false;
 		}
 
-		headline = GetTopArticle();
+		GetTopArticle();
 	}
 	
 	void Update()
 	{
-		if (uiText != null)
-		{
-			uiText.text = headline;
-		}
+		transform.Find("Headline").gameObject.GetComponent<Text>().text = headline;
 	}
 
 	// SEE THE WARNING BELOW
@@ -67,7 +65,7 @@ public class Newspaper : MonoBehaviour
     	return true;
 	}
 
-	private string GetTopArticle() {
+	private void GetTopArticle() {
 		// IMPORTANT: DO NOT USE THIS NEXT LINE IN PRODUCTION
 		// It implicitly trusts the certificate of whatever URL you're calling
 		// and could leave your application vulnerable
@@ -83,9 +81,10 @@ public class Newspaper : MonoBehaviour
         string jsonResponse = reader.ReadToEnd();
 
         var article = JSON.Parse(jsonResponse);
-        string headline = article[0]["title"]["rendered"].Value;
+        headline = article[0]["title"]["rendered"].Value;
+        article_body = article[0]["content"]["rendered"].Value;
 
-        return headline;
+        return;
 	}
 }
 
