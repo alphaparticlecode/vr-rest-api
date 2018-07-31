@@ -41,6 +41,8 @@ public class Newspaper : MonoBehaviour
 	public Text uiText;
 	private StringBuilder data;
 	public Renderer rend;
+	string first_paragraph;
+	string rest_of_article;
 	string article_body;
 	string headline;
 
@@ -57,6 +59,7 @@ public class Newspaper : MonoBehaviour
 	void Update()
 	{
 		transform.Find("Headline").gameObject.GetComponent<Text>().text = headline;
+		transform.Find("First Paragraph").gameObject.GetComponent<Text>().text = first_paragraph;
 	}
 
 	// SEE THE WARNING BELOW
@@ -83,6 +86,10 @@ public class Newspaper : MonoBehaviour
         var article = JSON.Parse(jsonResponse);
         headline = article[0]["title"]["rendered"].Value;
         article_body = article[0]["content"]["rendered"].Value;
+
+        string[] paragraphs = article_body.Split(new string[] {"<p>"}, StringSplitOptions.None);
+
+        first_paragraph = paragraphs[0];
 
         return;
 	}
