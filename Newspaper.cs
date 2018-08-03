@@ -36,6 +36,8 @@ using System.IO.IsolatedStorage;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
+using System.Text.RegularExpressions;
+
 public class Newspaper : MonoBehaviour
 {
 	public Text uiText;
@@ -60,6 +62,7 @@ public class Newspaper : MonoBehaviour
 	{
 		transform.Find("Headline").gameObject.GetComponent<Text>().text = headline;
 		transform.Find("First Paragraph").gameObject.GetComponent<Text>().text = first_paragraph;
+		transform.Find("Article Body").gameObject.GetComponent<Text>().text = article_body;
 	}
 
 	// SEE THE WARNING BELOW
@@ -87,9 +90,14 @@ public class Newspaper : MonoBehaviour
         headline = article[0]["title"]["rendered"].Value;
         article_body = article[0]["content"]["rendered"].Value;
 
-        string[] paragraphs = article_body.Split(new string[] {"<p>"}, StringSplitOptions.None);
-
+		var paragraphs = Regex.Split(article_body, @"<p>([\s\S]+?)<\/p>").Where(l => l != string.Empty).ToArray();
         first_paragraph = paragraphs[0];
+
+        // Remove the first paragraph, because we've already used it
+        article_body = Regex.Replace(article_body, "^<p>.*?</p>", "");
+
+        // Strip out HTML tags from markup
+        article_body = Regex.Replace(article_body, "<.*?>", String.Empty);
 
         return;
 	}
