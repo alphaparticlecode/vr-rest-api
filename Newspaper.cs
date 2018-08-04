@@ -93,7 +93,6 @@ public class Newspaper : MonoBehaviour
         article_body = article[0]["content"]["rendered"].Value;
 
         var featured_image_url = article[0]["featured_image_url"];
-        Debug.Log("Calling featured image function");
         StartCoroutine(getFeaturedImage(featured_image_url));
        	
 		var paragraphs = Regex.Split(article_body, @"<p>([\s\S]+?)<\/p>").Where(l => l != string.Empty).ToArray();
@@ -107,12 +106,9 @@ public class Newspaper : MonoBehaviour
 	}
 
 	IEnumerator getFeaturedImage(string api_url) {
-    	Debug.Log(api_url);
-    	Debug.Log("starting get featured image");
     	WWW www = new WWW(api_url);
 		yield return www;
 		article_image = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0, 0));
- 		Debug.Log("featured image should be placed");
  	}
 }
 
