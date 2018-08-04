@@ -46,6 +46,7 @@ public class Newspaper : MonoBehaviour
 	string first_paragraph;
 	string rest_of_article;
 	string article_body;
+	public Sprite article_image;
 	string headline;
 
 	void Start()
@@ -63,6 +64,7 @@ public class Newspaper : MonoBehaviour
 		transform.Find("Headline").gameObject.GetComponent<Text>().text = headline;
 		transform.Find("First Paragraph").gameObject.GetComponent<Text>().text = first_paragraph;
 		transform.Find("Article Body").gameObject.GetComponent<Text>().text = article_body;
+		transform.Find("Article Image").gameObject.GetComponent<Image>().sprite = article_image;
 	}
 
 	// SEE THE WARNING BELOW
@@ -90,6 +92,10 @@ public class Newspaper : MonoBehaviour
         headline = article[0]["title"]["rendered"].Value;
         article_body = article[0]["content"]["rendered"].Value;
 
+        var featured_image_url = article[0]["featured_image_url"];
+        Debug.Log("Calling featured image function");
+        StartCoroutine(getFeaturedImage(featured_image_url));
+       	
 		var paragraphs = Regex.Split(article_body, @"<p>([\s\S]+?)<\/p>").Where(l => l != string.Empty).ToArray();
         first_paragraph = paragraphs[0];
 
@@ -97,9 +103,16 @@ public class Newspaper : MonoBehaviour
         article_body = Regex.Replace(article_body, "^<p>.*?</p>", "");
 
         // Strip out HTML tags from markup
-        article_body = Regex.Replace(article_body, "<.*?>", String.Empty);
-
-        return;
+        article_body = Regex.Replace(article_body, "<.*?>", String.Empty);   
 	}
+
+	IEnumerator getFeaturedImage(string api_url) {
+    	Debug.Log(api_url);
+    	Debug.Log("starting get featured image");
+    	WWW www = new WWW(api_url);
+		yield return www;
+		article_image = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0, 0));
+ 		Debug.Log("featured image should be placed");
+ 	}
 }
 
