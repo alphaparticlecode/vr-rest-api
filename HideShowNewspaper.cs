@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class HideShowNewspaper : MonoBehaviour {
 
-	private GameObject newspaper;
+	private GameObject newspaper_closeup;
+	private GameObject table_newspaper;
 
 	// Use this for initialization
 	void Start () {
-		newspaper = GameObject.Find("NewspaperCanvas");
-		newspaper.SetActive(false);
+		newspaper_closeup = GameObject.Find("NewspaperCanvas");
+		table_newspaper = GameObject.Find("newspaper");
+		newspaper_closeup.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -17,11 +19,13 @@ public class HideShowNewspaper : MonoBehaviour {
 		OVRInput.Controller activeController = OVRInput.GetActiveController();
 
 		if( OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger) ) {
-			if (newspaper.activeSelf) {
-      			newspaper.SetActive(false);
+			if (newspaper_closeup.activeSelf) {
+      			newspaper_closeup.SetActive(false);
+      			table_newspaper.SetActive(true);
  			}
  			else {
- 				newspaper.SetActive(true);
+ 				newspaper_closeup.SetActive(true);
+ 				table_newspaper.SetActive(false);
  			}
 		}
 	}
