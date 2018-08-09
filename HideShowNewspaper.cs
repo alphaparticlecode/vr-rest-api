@@ -9,6 +9,7 @@ public class HideShowNewspaper : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		newspaper = GameObject.Find("NewspaperCanvas");
+		newspaper.SetActive(false);
 	}
 	
 	// Update is called once per frame
